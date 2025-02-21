@@ -1,8 +1,9 @@
 import numpy as np
+import simulation.parameters as param
 
 class RigidBody:
-    def __init__(self, mass, Jxx, Jyy, Jzz, Jxz, x):
-        
+    def __init__(self, mass=param.mass, Jxx=param.Jx, Jyy=param.Jy, Jzz=param.Jz, Jxz=param.Jxz, x=param.state0):
+
         # Define mass/inertial properties
         self.mass = mass
         self.J = np.array([[Jxx,   0, Jxz],
