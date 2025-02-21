@@ -2,4 +2,7 @@ Dockerfile
 docker-compose.yml
 wittenburg1977dynamics_rigid_bodies.pdf
 mulder2007flightdynamics.pdf
-simulation/__pycache__
+src/simulation/__pycache__
+src/hw/hw1/__pycache__
+src/hw/hw2/__pycache__
+.gitignore

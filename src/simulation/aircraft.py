@@ -13,7 +13,8 @@ class Aircraft(RigidBody):
         self.plot_list_dict = {
             'F_lift':[],
             'F_drag':[],
-            'alpha':[]
+            'alpha':[],
+            'speed':[]
         }
     
     def forces_moments(self, delta):
@@ -31,7 +32,7 @@ class Aircraft(RigidBody):
         psi = self.psi
         p = self.p
         q = self.q
-        r = self.r        
+        r = self.r
 
         # compute gravitational forces ([fg_x, fg_y, fg_z])
         grav_force = np.array([[-self.mass * param.gravity * np.sin(theta)],
@@ -127,4 +128,5 @@ class Aircraft(RigidBody):
         self.plot_list_dict['F_lift'].append(F_lift)
         self.plot_list_dict['F_drag'].append(F_drag)
         self.plot_list_dict['alpha'].append(alpha)
+        self.plot_list_dict['speed'].append(np.linalg.norm(np.sqrt(self.u**2 + self.v**2 + self.w**2)))
         return forces_moments
