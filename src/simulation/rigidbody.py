@@ -95,7 +95,7 @@ class RigidBody:
         x7_9 = self.third_ode()
         x10_12 = self.fourth_ode(moment_vect)
         return np.vstack((x1_3, x4_6, x7_9, x10_12)).reshape(12,1)
-
+ 
     def update_state(self, x):
         # Define current state
         self.pn = x[0].item()
