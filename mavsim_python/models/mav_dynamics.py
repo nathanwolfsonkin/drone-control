@@ -14,7 +14,7 @@ import numpy as np
 # load message types
 from message_types.msg_state import MsgState
 import parameters.aerosonde_parameters as MAV
-from tools.rotations import euler_to_quaternion, quaternion_to_euler
+from tools.rotations import euler_to_quaternion, quaternion_to_euler, quaternion_to_rotation
 
 class MavDynamics:
     def __init__(self, Ts):
@@ -111,12 +111,14 @@ class MavDynamics:
         Mz = forces_moments.item(5)
         
         # Position Kinematics
-        def position_kinematics():
+        def position_kinematics():            
             A = np.array([
                 [e1**2 + e0**2 - e2**2 - e3**2,     2 * (e1 * e2 - e3 * e0),            2 * (e1 * e3 + e2 * e0)],
                 [2 * (e1 * e2 + e3 * e0),           e2**2 + e0**2 - e1**2 - e3**2,      2 * (e2 * e3 - e1 * e0)],
                 [2 * (e1 * e3 - e2 * e0),           2 * (e2 * e3 + e1 * e0),            e3**2 + e0**2 - e1**2 - e2**2]
             ])
+            A = A / np.linalg.det(A)
+            
             x = np.array([[u],
                           [v],
                           [w]]).reshape(3,1)
