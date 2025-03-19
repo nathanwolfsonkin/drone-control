@@ -15,6 +15,8 @@ from models.wind_simulation import WindSimulation
 wind = WindSimulation(SIM.ts_simulation)
 mav = MavDynamics(SIM.ts_simulation)
 delta = MsgDelta()
+
+##### Case 1 ######
 delta.elevator = -0.2
 delta.aileron = 0.0
 delta.rudder = 0.005
@@ -50,7 +52,8 @@ print("   p_dot: ", x_dot.item(10))
 print("   q_dot: ", x_dot.item(11))
 print("    r_dt: ", x_dot.item(12) , "\n\n\n")
 
-##### Case 1 ######
+
+##### Case 2 ######
 
 delta.elevator = -0.15705144
 delta.aileron = 0.01788999

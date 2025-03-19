@@ -9,29 +9,29 @@ from tools.rotations import euler_to_quaternion
 #   t: time
 #   x: state vector
 #   u: input
-mass = 1 # kg
-Jxx = 1 # kg*m^2
-Jyy = 1 # kg*m^2
-Jzz = 2 # kg*m^2
-Jxz = 0 # kg*m^2
+mass = MAV.mass # kg
+Jxx = MAV.Jx # kg*m^2
+Jyy = MAV.Jy # kg*m^2
+Jzz = MAV.Jz # kg*m^2
+Jxz = MAV.Jxz # kg*m^2
 
-pn = 0 # m 
-pe = 0 # m
-pd = 0 # m
-u = 0 # m/s
-v = 0 # m/s
-w = 0 # m/s
-phi = 0 # deg
-theta = 0 # deg
-psi = 0 # deg
+pn = MAV.north0 # m 
+pe = MAV.east0 # m
+pd = MAV.down0 # m
+u = MAV.u0 # m/s
+v = MAV.v0 # m/s
+w = MAV.w0 # m/s
+phi = MAV.phi0 # deg
+theta = MAV.theta0 # deg
+psi = MAV.psi0 # deg
 e = euler_to_quaternion(phi=phi, theta=theta, psi=psi)
-p = 2.0 # deg/s
-q = 0.0 # deg/s
-r = 1.0 # deg/s
+p = MAV.p0 # deg/s
+q = MAV.q0 # deg/s
+r = MAV.r0 # deg/s
 
 t = 0.0
-dt = 0.1
-n = 100
+dt = 0.001
+n = 10000
 input = np.array([0, 0, 0, 0, 0, 0]).reshape(6,1)
 
 state0 = np.array([pn, pe, pd, u, v, w, e.item(0), e.item(1), e.item(2), e.item(3), p, q, r]).reshape(13,1)
@@ -39,11 +39,14 @@ state0 = np.array([pn, pe, pd, u, v, w, e.item(0), e.item(1), e.item(2), e.item(
 rigid_body = RigidBody(dt)
 rigid_body.external_set_state(state0)
 
+x = rigid_body._state
+
 t_history = [0]
 omega_history = [[p, q]]
 omega3_history = [r]
 for i in range(n):
     
+    print(x)
     rigid_body.update(input)
     t = (i+1) * dt
     x = rigid_body._state

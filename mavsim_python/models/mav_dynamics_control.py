@@ -94,18 +94,20 @@ class MavDynamics(RigidBody):
         u = self._state.item(3)
         v = self._state.item(4)
         w = self._state.item(5)
-        phi, theta, psi = quaternion_to_euler(self._state[6:10])
-        p = self._state[10]
-        q = self._state[11]
-        r = self._state[12]
-
-        # compute gravitational forces ([fg_x, fg_y, fg_z])
-        grav_force = np.array([[-MAV.mass * MAV.gravity * np.sin(theta)],
-                               [ MAV.mass * MAV.gravity * np.cos(theta) * np.sin(phi)],
-                               [ MAV.mass * MAV.gravity * np.cos(theta) * np.cos(phi)],
-                               [0],
-                               [0],
-                               [0]])
+        e0 = self._state.item(6)
+        e1 = self._state.item(7)
+        e2 = self._state.item(8)
+        e3 = self._state.item(9)
+        p = self._state.item(10)
+        q = self._state.item(11)
+        r = self._state.item(12)
+        
+        grav_force = MAV.mass * MAV.gravity * np.array([[2 * (e1*e3 - e2*e0)],
+                                                        [2 * (e2*e3 + e1*e0)],
+                                                        [e3**2 + e0**2 - e1**2 - e2**2],
+                                                        [0],
+                                                        [0],
+                                                        [0]])
 
         # NON-LINEAR IMPLEMENTATION
         # compute Lift and Drag coefficients (CL, CD)
@@ -113,7 +115,7 @@ class MavDynamics(RigidBody):
         
         Va = np.linalg.norm(np.array([u_r, v_r, w_r]).T)
         
-        alpha = np.arctan2(w_r,u_r)
+        alpha = np.arctan2(w_r, u_r)
         alpha = alpha.item()
         
         beta = np.arcsin(v_r/Va)
@@ -145,9 +147,12 @@ class MavDynamics(RigidBody):
         R = np.array([[np.cos(alpha), -np.sin(alpha)],
                       [np.sin(alpha),  np.cos(alpha)]])
         
-        fx, fz = (R @ np.array([[-F_drag],
-                               [-F_lift]]).reshape(2,1))
+        fx_fz = R @ np.array([[-F_drag],
+                              [-F_lift]])
 
+        fx = fx_fz.item(0)
+        fz = fx_fz.item(1)
+        
         # compute lateral forces in body frame (fy)
         fy = 0.5 * MAV.rho * Va**2 * MAV.S_wing * (
             MAV.C_Y_0 +
@@ -185,7 +190,7 @@ class MavDynamics(RigidBody):
             MAV.C_n_delta_r * delta_r
         )
 
-        forces_moments = np.array([[fx, fy, fz, Mx, My, Mz]]).T + grav_force + prop_force_moment
+        forces_moments = np.array([fx, fy, fz, Mx, My, Mz]).T + grav_force + prop_force_moment
         
         return forces_moments
 
@@ -213,7 +218,7 @@ class MavDynamics(RigidBody):
         fx = MAV.rho * n**2 * np.power(MAV.D_prop, 4) * CT
         Mx = - MAV.rho * n**2 * np.power(MAV.D_prop, 5) * CQ
 
-        return fx, Mx
+        return fx, -Mx
 
     def _update_true_state(self):
         # rewrite this function because we now have more information

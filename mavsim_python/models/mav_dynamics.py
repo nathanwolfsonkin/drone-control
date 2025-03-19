@@ -69,7 +69,7 @@ class MavDynamics:
         k2 = self._f(self._state[0:13] + time_step/2.*k1, forces_moments)
         k3 = self._f(self._state[0:13] + time_step/2.*k2, forces_moments)
         k4 = self._f(self._state[0:13] + time_step*k3, forces_moments)
-        self._state[0:13] += time_step/6 * (k1 + 2*k2 + 2*k3 + k4)
+        self._state[0:13] += (time_step/6) * (k1 + 2*k2 + 2*k3 + k4)
 
         # normalize the quaternion
         e0 = self._state.item(6)
