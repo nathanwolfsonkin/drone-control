@@ -60,7 +60,7 @@ class Autopilot:
 	
 	#### TODO #####
         # lateral autopilot
-
+        
 
         # longitudinal autopilot
 

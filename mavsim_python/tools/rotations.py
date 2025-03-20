@@ -140,10 +140,10 @@ def rotation_to_euler(R):
     else:
         psi = 0
         if R[2][0]==-1:
-            theta = pi/2
+            theta = np.pi/2
             phi = psi + np.arctan2(R[0][1], R[0][2])
         else:
-            theta = -pi/2
+            theta = -np.pi/2
             phi = -psi + np.arctan2(-R[0][1], -R[0][2])
     return phi, theta, psi
 
@@ -159,4 +159,3 @@ def hat(omega):
                           [c, 0, -a],
                           [-b, a, 0]])
     return omega_hat
-
