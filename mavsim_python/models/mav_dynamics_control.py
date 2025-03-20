@@ -123,7 +123,7 @@ class MavDynamics(RigidBody):
         # propeller thrust and torque
         thrust_prop, torque_prop = self._motor_thrust_torque(Va, delta.throttle)
         
-        prop_force_moment = np.array([thrust_prop, 0, 0, torque_prop, 0, 0]).reshape(6,1)
+        prop_force_moment = np.array([thrust_prop, 0, 0, -torque_prop, 0, 0]).reshape(6,1)
 
         # compute longitudinal forces in body frame (fx, fz)
         R = np.array([[np.cos(alpha), -np.sin(alpha)],
@@ -172,10 +172,7 @@ class MavDynamics(RigidBody):
             MAV.C_n_delta_a * delta_a +
             MAV.C_n_delta_r * delta_r
         )
-
-        # TODO 
-        # Mx is correct if it is negated on the prop_force_moment
-        # Fx seems wrong no matter what we do ;-;
+        
         forces_moments = np.array([fx, fy, fz, Mx, My, Mz]).reshape(6,1) + grav_force + prop_force_moment
         
         return forces_moments
