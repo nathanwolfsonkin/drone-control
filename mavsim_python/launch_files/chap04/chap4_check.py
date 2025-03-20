@@ -50,7 +50,7 @@ print("  e2_dot: ", x_dot.item(8))
 print("  e3_dot: ", x_dot.item(9))
 print("   p_dot: ", x_dot.item(10))
 print("   q_dot: ", x_dot.item(11))
-print("    r_dt: ", x_dot.item(12) , "\n\n\n")
+print("   r_dot: ", x_dot.item(12) , "\n\n\n")
 
 
 ##### Case 2 ######
@@ -102,7 +102,7 @@ print("  e2_dot: ", x_dot.item(8))
 print("  e3_dot: ", x_dot.item(9))
 print("   p_dot: ", x_dot.item(10))
 print("   q_dot: ", x_dot.item(11))
-print("    r_dt: ", x_dot.item(12) , "\n\n\n")
+print("   r_dot: ", x_dot.item(12) , "\n\n\n")
 
 
 current_wind = np.array([[ 0.        ],
@@ -147,7 +147,7 @@ print("  e2_dot: ", x_dot.item(8))
 print("  e3_dot: ", x_dot.item(9))
 print("   p_dot: ", x_dot.item(10))
 print("   q_dot: ", x_dot.item(11))
-print("    r_dt: ", x_dot.item(12) , "\n\n\n")
+print("   r_dot: ", x_dot.item(12) , "\n\n\n")
 
 
 # These outputs are results using the default parameters from the imported parameter files
@@ -182,7 +182,7 @@ print("    r_dt: ", x_dot.item(12) , "\n\n\n")
 #   e3_dot:  0.0
 #    p_dot:  0.6021690003674433
 #    q_dot:  7.714919589234582
-#     r_dt:  -0.08257466286924951 
+#    r_dot:  -0.08257466286924951 
 
 
 
@@ -216,7 +216,7 @@ print("    r_dt: ", x_dot.item(12) , "\n\n\n")
 #   e3_dot:  0.10134276693843723
 #    p_dot:  1.8427420637214973
 #    q_dot:  5.2743652738342774
-#     r_dt:  -0.5471458931221012 
+#    r_dot:  -0.5471458931221012 
 
 
 
@@ -257,4 +257,4 @@ print("    r_dt: ", x_dot.item(12) , "\n\n\n")
 #   e3_dot:  0.10134276693843723
 #    p_dot:  0.10284849278240359
 #    q_dot:  0.11393277483867911
-#     r_dt:  -0.04899299126408019 
+#    r_dot:  -0.04899299126408019 
