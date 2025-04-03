@@ -26,10 +26,9 @@ import time
 wind = WindSimulation(SIM.ts_simulation)
 mav = MavDynamics(SIM.ts_simulation)
 delta = MsgDelta()
-viewers = ViewManager(mav=True, 
+viewers = ViewManager(animation=True, 
                       data=True,
                       video=False, video_name='chap4.mp4')
-
 # initialize the simulation time
 sim_time = SIM.start_time
 plot_time = sim_time

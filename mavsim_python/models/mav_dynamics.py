@@ -76,11 +76,15 @@ class MavDynamics:
         e1 = self._state.item(7)
         e2 = self._state.item(8)
         e3 = self._state.item(9)
-        normE = np.sqrt(e0**2+e1**2+e2**2+e3**2)
-        self._state[6][0] = self._state.item(6)/normE
-        self._state[7][0] = self._state.item(7)/normE
-        self._state[8][0] = self._state.item(8)/normE
-        self._state[9][0] = self._state.item(9)/normE
+        normE = np.sqrt(e0**2 + e1**2 + e2**2 + e3**2)
+        if normE > 1e-6:  # Avoid division by numbers close to zero
+            self._state[6][0] /= normE
+            self._state[7][0] /= normE
+            self._state[8][0] /= normE
+            self._state[9][0] /= normE
+        else:
+            print("Warning: Quaternion normalization skipped due to near-zero norm.")
+
     
     def _f(self, state: np.ndarray, forces_moments: np.ndarray):
         """
@@ -117,7 +121,12 @@ class MavDynamics:
                 [2 * (e1 * e2 + e3 * e0),           e2**2 + e0**2 - e1**2 - e3**2,      2 * (e2 * e3 - e1 * e0)],
                 [2 * (e1 * e3 - e2 * e0),           2 * (e2 * e3 + e1 * e0),            e3**2 + e0**2 - e1**2 - e2**2]
             ])
-            A = A / np.linalg.det(A)
+            det_A = np.linalg.det(A)
+            if det_A != 0:
+                A = A / det_A
+            else:
+                print("Warning: Singular matrix detected. Normalization skipped.")
+
             
             x = np.array([[u],
                           [v],

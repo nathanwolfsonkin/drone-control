@@ -30,7 +30,7 @@ import time
 wind = WindSimulation(SIM.ts_simulation)
 mav = MavDynamics(SIM.ts_simulation)
 autopilot = Autopilot(SIM.ts_simulation)
-viewers = ViewManager(mav=True, 
+viewers = ViewManager(animation=True, 
                       data=True,
                       video=False, video_name='chap6.mp4')
 
@@ -41,7 +41,7 @@ Va_command = Signals(dc_offset=25.0,
                      amplitude=3.0,
                      start_time=2.0,
                      frequency=0.01)
-altitude_command = Signals(dc_offset=100.0,
+altitude_command = Signals(dc_offset=60.0,
                            amplitude=20.0,
                            start_time=0.0,
                            frequency=0.02)
@@ -88,7 +88,6 @@ while sim_time < end_time:
     time.sleep(0.002) # slow down the simulation for visualization
 
 viewers.close(dataplot_name="ch6_data_plot")
-
 
 
 

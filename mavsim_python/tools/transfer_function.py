@@ -15,8 +15,11 @@ class TransferFunction:
         self.Ts = Ts
         # make the leading coef of den == 1
         if den.item(0) != 1:
-            den = den / den.item(0)
-            num = num / den.item(0)
+            if den.item(0) != 0:
+                den = den / den.item(0)
+                num = num / den.item(0)
+            else:
+                print("Warning: Zero denominator coefficient. Normalization skipped.")
         self.num = num
         self.den = den
         # set up state space equations in control canonic form

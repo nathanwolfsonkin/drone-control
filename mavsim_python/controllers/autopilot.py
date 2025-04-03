@@ -4,20 +4,21 @@ autopilot block for mavsim_python
     - Last Update:
         2/6/2019 - RWB
 """
+import sys
 import numpy as np
+sys.path.append('..')
 import parameters.control_parameters as AP
-# from tools.transfer_function import TransferFunction
+from tools.transfer_function import TransferFunction
 from tools.wrap import wrap
 from controllers.pi_control import PIControl
 from controllers.pd_control_with_rate import PDControlWithRate
-from controllers.tf_control import TFControl
 from message_types.msg_state import MsgState
 from message_types.msg_delta import MsgDelta
 
 
 class Autopilot:
     def __init__(self, ts_control):
-        # instantiate lateral-directional controllers
+        # instantiate lateral controllers
         self.roll_from_aileron = PDControlWithRate(
                         kp=AP.roll_kp,
                         kd=AP.roll_kd,
@@ -31,15 +32,8 @@ class Autopilot:
                         num=np.array([[AP.yaw_damper_kr, 0]]),
                         den=np.array([[1, AP.yaw_damper_p_wo]]),
                         Ts=ts_control)
-        # self.yaw_damper = TFControl(
-        #                 k=AP.yaw_damper_kr,
-        #                 n0=0.0,
-        #                 n1=1.0,
-        #                 d0=AP.yaw_damper_p_wo,
-        #                 d1=1,
-        #                 Ts=ts_control)
 
-        # instantiate longitudinal controllers
+        # instantiate lateral controllers
         self.pitch_from_elevator = PDControlWithRate(
                         kp=AP.pitch_kp,
                         kd=AP.pitch_kd,
@@ -57,24 +51,33 @@ class Autopilot:
         self.commanded_state = MsgState()
 
     def update(self, cmd, state):
-	
-	#### TODO #####
+
         # lateral autopilot
-        
+        chi_c = wrap (cmd.course_command , state.chi )
+        phi_c_unsaturated = self.course_from_roll.update(chi_c, state.chi)
+        phi_c_limit = np.pi / 4
+        phi_c = self.saturate(phi_c_unsaturated, -phi_c_limit, phi_c_limit)
+        delta_a = self.roll_from_aileron.update(phi_c, state.phi, state.p)
+        delta_r = self.yaw_damper.update(state.r)
 
         # longitudinal autopilot
+        # saturate the altitude command
+        h_c = self.saturate(cmd.altitude_command, state.altitude - AP.altitude_zone, state.altitude + AP.altitude_zone)
+        theta_c = self.altitude_from_pitch.update(h_c, state.altitude)
+        delta_e = self.pitch_from_elevator.update(theta_c, state.theta, state.q)
+        delta_t_unsat = self.airspeed_from_throttle.update(cmd.airspeed_command, state.Va)
+        delta_t = self.saturate(delta_t_unsat, 0, 1.0)
 
-
-        # construct control outputs and commanded states
-        delta = MsgDelta(elevator=0,
-                         aileron=0,
-                         rudder=0,
-                         throttle=0)
-        self.commanded_state.altitude = 0
-        self.commanded_state.Va = 0
-        self.commanded_state.phi = 0
-        self.commanded_state.theta = 0
-        self.commanded_state.chi = 0
+        # construct output and commanded states
+        delta = MsgDelta(elevator=delta_e,
+                         aileron=delta_a,
+                         rudder=delta_r,
+                         throttle=delta_t)
+        self.commanded_state.altitude = cmd.altitude_command
+        self.commanded_state.Va = cmd.airspeed_command
+        self.commanded_state.phi = phi_c
+        self.commanded_state.theta = theta_c
+        self.commanded_state.chi = cmd.course_command
         return delta, self.commanded_state
 
     def saturate(self, input, low_limit, up_limit):

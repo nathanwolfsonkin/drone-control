@@ -153,7 +153,6 @@ class MavDynamics(RigidBody):
             MAV.C_m_delta_e * delta_e
         )
         
-        print(delta_r)
         # compute lateral torques in body frame (Mx, Mz)
         Mx = 0.5 * MAV.rho * Va**2 * MAV.S_wing * MAV.b * (
             MAV.C_ell_0 +

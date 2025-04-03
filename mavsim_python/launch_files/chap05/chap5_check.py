@@ -5,12 +5,14 @@
 import os, sys
 # insert parent directory at beginning of python search path
 from pathlib import Path
-sys.path.insert(0,os.fspath(Path(__file__).parents[1]))
+sys.path.insert(0,os.fspath(Path(__file__).parents[2]))
 import numpy as np
 from models.mav_dynamics_control import MavDynamics
 from models.compute_models import compute_ss_model, compute_tf_model, euler_state, quaternion_state, f_euler, df_dx, df_du, dT_dVa, dT_ddelta_t
 import parameters.simulation_parameters as SIM
 from message_types.msg_delta import MsgDelta
+
+np.set_printoptions(linewidth=200)
 
 mav = MavDynamics(SIM.ts_simulation)
 
@@ -28,8 +30,7 @@ print("B_lon:\n" , B_lon, "\n")
 print("A_lat:\n" , A_lat, "\n")
 print("B_lat:\n" , B_lat, "\n")
 
-Va_trim, alpha_trim, theta_trim, a_phi1, a_phi2, a_theta1, a_theta2, a_theta3, \
-    a_V1, a_V2, a_V3 = compute_tf_model(mav, trim_state, trim_input)
+Va_trim, alpha_trim, theta_trim, a_phi1, a_phi2, a_theta1, a_theta2, a_theta3, a_V1, a_V2, a_V3 = compute_tf_model(mav, trim_state, trim_input)
 
 print("    Va_trim: " , Va_trim, "\n")
 print(" alpha_trim: " , alpha_trim, "\n")
